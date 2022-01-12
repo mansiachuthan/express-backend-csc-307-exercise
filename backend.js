@@ -110,13 +110,18 @@ function addUser(user){
     users['users_list'].push(user);
 }
 
+// structure "DELETE" body like so
+// {
+//    "id" : [insert id number]
+// }
 app.delete('/users', (req, res) => {
-    const userToDelete = req.body;
-    delUser(userToDelete);
+    const idToDelete = req.body.id;
+    delUser(idToDelete);
     res.status(200).end();
 });
 
-function delUser(user){
+function delUser(id){
+	var user = findUserById(id)
 	var index = users['users_list'].indexOf(user)
     users['users_list'].splice(index, 1);
 }
