@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 5000;
 const cors = require('cors');
+var userIds = ['xyz789', 'abc123', 'ppp222', 'yat999', 'zap555'];
 
 app.use(cors());
 
@@ -100,10 +101,38 @@ function findUserById(id) {
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
 
+function randIdGen() {
+	var alpha = "abcdefghijklmnopqrstuvwxyz";
+	var alpha_len = alpha.length;
+	var nums = "0123456789";
+	var nums_len = nums.length;
+	var ret_str = ""
+
+	while (true) {
+		for (var i = 0; i<3; i++) {
+			randIndex = Math.floor(Math.random() * alpha_len);
+			randomChar = alpha.charAt(randIndex);
+			ret_str += randomChar;
+		}
+
+		for (var i = 0; i<3; i++) {
+			randIndex = Math.floor(Math.random() * nums_len);
+			randomNum = nums.charAt(randIndex);
+			ret_str += randomNum;
+		}
+		if (!(userIds.includes(ret_str))) 
+			userIds.push(ret_str);
+			break;
+	}
+
+	return ret_str
+}
+
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
+	userToAdd.id = randIdGen();
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).end();
 });
 
 function addUser(user){
