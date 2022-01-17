@@ -132,7 +132,7 @@ app.post('/users', (req, res) => {
     const userToAdd = req.body;
 	userToAdd.id = randIdGen();
     addUser(userToAdd);
-    res.status(201).end();
+    res.status(201).send(userToAdd);
 });
 
 function addUser(user){
@@ -143,14 +143,18 @@ function addUser(user){
 // {
 //    "id" : [insert id number]
 // }
-app.delete('/users', (req, res) => {
-    const idToDelete = req.body.id;
-    delUser(idToDelete);
-    res.status(200).end();
+app.delete('/users/:id', (req, res) => {
+    const idToDelete = req.params['id'];
+    delUser(idToDelete, res);
+    res.status(204).end();
 });
 
-function delUser(id){
-	var user = findUserById(id)
-	var index = users['users_list'].indexOf(user)
-    users['users_list'].splice(index, 1);
+function delUser(id, res){
+	var result = findUserById(id)
+	if (result === undefined || result.length == 0)
+        res.status(404).send('Resource not found.');
+    else {
+		var index = users['users_list'].indexOf(result)
+		users['users_list'].splice(index, 1);
+	}
 }
